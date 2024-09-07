@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains a full stack Todo App where frontend part is done with React + chakra-ui and backend part is done with Go lang
+This repository contains a full stack Todo App where frontend part is done with `React + chakra-ui` and backend part is done with `Go` lang
 
 ## Features
 
