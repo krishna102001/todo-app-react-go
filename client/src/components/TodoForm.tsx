@@ -1,4 +1,4 @@
-import { Button, Flex, Input, Spinner } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Spinner, useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
@@ -6,7 +6,7 @@ import { BASE_URL } from "../App";
 
 const TodoForm = () => {
   const [newTodo, setNewTodo] = useState("");
-
+  const toast = useToast();
   const queryClient = useQueryClient();
 
   const { mutate: createTodo, isPending: isCreating } = useMutation({
@@ -33,6 +33,15 @@ const TodoForm = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box color='white' p={3} bg='green.500'>
+            Todo item is added
+          </Box>
+        ),
+        duration: 1000,
+      });
     },
     onError: (error: any) => {
       alert(error.message);
@@ -40,19 +49,21 @@ const TodoForm = () => {
   });
 
   return (
-    <form onSubmit={createTodo}>
-      <Flex gap={2}>
-        <Input
-          type='text'
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          ref={(input) => input && input.focus()}
-        />
-        <Button mx={2} type='submit' _active={{ transform: "scale(.97)" }}>
-          {isCreating ? <Spinner size={"xs"} /> : <IoMdAdd size={30} />}
-        </Button>
-      </Flex>
-    </form>
+    <>
+      <form onSubmit={createTodo}>
+        <Flex gap={2}>
+          <Input
+            type='text'
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            ref={(input) => input && input.focus()}
+          />
+          <Button mx={2} type='submit' _active={{ transform: "scale(.97)" }}>
+            {isCreating ? <Spinner size={"xs"} /> : <IoMdAdd size={30} />}
+          </Button>
+        </Flex>
+      </form>
+    </>
   );
 };
 

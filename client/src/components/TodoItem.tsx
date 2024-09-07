@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, Spinner, Text } from "@chakra-ui/react";
+import { Badge, Box, Flex, Spinner, Text, useToast } from "@chakra-ui/react";
 import { FaCheckCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { Todo } from "./TodoList";
@@ -7,6 +7,7 @@ import { BASE_URL } from "../App";
 
 const TodoItem = ({ todo }: { todo: Todo }) => {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const { mutate: updateTodo, isPending: isUpdating } = useMutation({
     mutationKey: ["updateTodo"],
     mutationFn: async () => {
@@ -25,6 +26,15 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box color='white' p={3} bg='blue.500'>
+            {todo.body} is done ✅
+          </Box>
+        ),
+        duration: 1000,
+      });
     },
   });
 
@@ -45,6 +55,15 @@ const TodoItem = ({ todo }: { todo: Todo }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+      toast({
+        position: "top-right",
+        render: () => (
+          <Box color='white' p={3} bg='red.500'>
+            Successfully Deleted
+          </Box>
+        ),
+        duration: 1000,
+      });
     },
   });
   return (
