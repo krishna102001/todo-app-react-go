@@ -48,3 +48,4 @@ This repository contains a full stack Todo App where frontend part is done with 
    ```bash
    go run main.go
    ```
+   The backend server should now be running on `http://localhost:4000`.
