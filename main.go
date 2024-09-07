@@ -26,10 +26,12 @@ var collection *mongo.Collection
 func main() {
 	// fmt.Println("hello krishna")
 
-	//loading the env file
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	//loading the env file if not in productions
+	if os.Getenv("ENV") != "production" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	//connecting to a mongoDB ATLAS
@@ -58,6 +60,12 @@ func main() {
 	//server creation using fiber
 	app := fiber.New()
 
+	//setting cors
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins: "http://localhost:5173",
+	// 	AllowHeaders: "Origin,Content-Type,Accept",
+	// }))
+
 	//CRUD routes are defined
 	app.Get("/api/todos", getTodos)
 	app.Post("/api/todos", createTodo)
@@ -70,6 +78,12 @@ func main() {
 	if port == "" {
 		port = "4000"
 	}
+
+	//check it is in production then make its static files
+	if os.Getenv("ENV") == "production" {
+		app.Static("/", "./client/dist")
+	}
+
 	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
 
